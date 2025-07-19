@@ -1,0 +1,11 @@
+basePath: /
+host: localhost:8080
+info:
+  contact: {}
+  description: Сервис для управления онлайн-подписками
+  title: Subscription Service API
+  version: "1.0"
+paths: {}
+schemes:
+- http
+swagger: "2.0"
