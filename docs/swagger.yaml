@@ -1,11 +1,135 @@
 basePath: /
+definitions:
+  subscriptions.Subscription:
+    properties:
+      end_date:
+        type: string
+      id:
+        type: integer
+      price:
+        type: integer
+      service_name:
+        type: string
+      start_date:
+        type: string
+      user_id:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
   description: Сервис для управления онлайн-подписками
   title: Subscription Service API
   version: "1.0"
-paths: {}
+paths:
+  /subscriptions:
+    delete:
+      description: Удаляет подписку с указанным ID
+      parameters:
+      - description: ID подписки
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Подписка удалена
+        "400":
+          description: Некорректный ID
+        "500":
+          description: Ошибка сервера
+      summary: Удалить подписку
+      tags:
+      - subscriptions
+    get:
+      description: Считает суммарную стоимость всех подписок пользователя с фильтрацией
+        по имени сервиса и дате
+      parameters:
+      - description: Активировать подсчет суммы
+        in: query
+        name: sum
+        required: true
+        type: boolean
+      - description: UUID пользователя
+        in: query
+        name: user_id
+        required: true
+        type: string
+      - description: Название сервиса
+        in: query
+        name: service_name
+        required: true
+        type: string
+      - description: Дата начала периода в формате YYYY-MM
+        in: query
+        name: start
+        required: true
+        type: string
+      - description: Дата конца периода в формате YYYY-MM
+        in: query
+        name: end
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Объект с total_price
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Некорректные параметры
+        "500":
+          description: Ошибка сервера
+      summary: Суммировать стоимость подписок
+      tags:
+      - subscriptions
+    post:
+      consumes:
+      - application/json
+      description: Создает новую запись о подписке
+      parameters:
+      - description: Данные подписки
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/subscriptions.Subscription'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Подписка создана
+        "400":
+          description: Некорректный запрос
+        "500":
+          description: Ошибка сервера
+      summary: Создать подписку
+      tags:
+      - subscriptions
+    put:
+      consumes:
+      - application/json
+      description: Обновляет подписку с указанным ID
+      parameters:
+      - description: Данные подписки
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/subscriptions.Subscription'
+      responses:
+        "200":
+          description: Подписка обновлена
+        "400":
+          description: Некорректный запрос
+        "500":
+          description: Ошибка сервера
+      summary: Обновить подписку
+      tags:
+      - subscriptions
 schemes:
 - http
 swagger: "2.0"

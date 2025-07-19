@@ -2,6 +2,7 @@ package subscriptions
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,6 +17,7 @@ func NewService(r Repository) *Service {
 }
 
 func (s *Service) Create(ctx context.Context, sub Subscription) error {
+	log.Printf("Service: создание подписки %+v", sub)
 	return s.repo.Create(ctx, sub)
 }
 
@@ -24,7 +26,16 @@ func (s *Service) List(ctx context.Context) ([]Subscription, error) {
 }
 
 func (s *Service) GetByID(ctx context.Context, id int) (*Subscription, error) {
-	return s.repo.GetByID(ctx, id)
+	log.Printf("Service: получение подписки по ID: %d", id)
+
+	sub, err := s.repo.GetByID(ctx, id)
+	if err != nil {
+		log.Printf("Service: ошибка при получении подписки с ID %d: %v", id, err)
+		return nil, err
+	}
+
+	log.Printf("Service: подписка найдена: %+v", sub)
+	return sub, nil
 }
 
 func (s *Service) Update(ctx context.Context, sub Subscription) error {

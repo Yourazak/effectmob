@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -37,11 +38,17 @@ type Subscription struct {
 }
 
 func (r *PostgresRepository) Create(ctx context.Context, s Subscription) error {
+	log.Printf("Repo: создание подписки: service_name=%s, price=%d, user_id=%s, start_date=%s, end_date=%v",
+		s.ServiceName, s.Price, s.UserID, s.StartDate.Format("2006-01-02"), s.EndDate)
+
 	query := `
 		INSERT INTO subscriptions (service_name, price, user_id, start_date, end_date)
 		VALUES ($1, $2, $3, $4, $5)
 	`
 	_, err := r.db.ExecContext(ctx, query, s.ServiceName, s.Price, s.UserID, s.StartDate, s.EndDate)
+	if err != nil {
+		log.Printf("Repo: ошибка при создании подписки: %v", err)
+	}
 	return err
 }
 
